@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 set(MUTABLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../eurorack")
 set(STMLIB_PATH ${MUTABLE_PATH}/stmlib)
 set(MI_PATH ${MUTABLE_PATH}/plaits)
-set(TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsTemplate")
+set(TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsCommon")
 
 include_directories(${SC_PATH}/include/plugin_interface)
 include_directories(${SC_PATH}/include/common)
@@ -119,7 +119,7 @@ set(MI_SOURCES
 )
 
 #set(BUILD_SOURCES
-#	"${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsTemplate/MiPlaitsTemplate.cpp"
+#	"${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsCommon/MiPlaitsCommon.cpp"
 #)
 
 

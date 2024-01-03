@@ -32,8 +32,6 @@
 #include "avrlib/base.h"
 #include "avrlib/random.h"
 
-//#include "grids/hardware_config.h"
-
 namespace grids {
 
 const uint8_t kNumParts = 3;
@@ -45,6 +43,7 @@ struct DrumsSettings {
   uint8_t x;
   uint8_t y;
   uint8_t randomness;
+  uint8_t swing_amt;
 };
 
 struct PatternGeneratorSettings {

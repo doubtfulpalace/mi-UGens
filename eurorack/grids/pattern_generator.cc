@@ -70,8 +70,7 @@ void PatternGenerator::EvaluateDrums() {
   // At the beginning of a pattern, decide on perturbation levels.
   if (step_ == 0) {
     for (uint8_t i = 0; i < kNumParts; ++i) {
-      uint8_t randomness = options_.swing
-          ? 0 : settings_.options.drums.randomness >> 2;
+      uint8_t randomness = settings_.options.drums.randomness >> 2;
       part_perturbation_[i] = U8U8MulShift8(Random::GetByte(), randomness);
     }
   }
@@ -194,7 +193,7 @@ void PatternGenerator::Evaluate() {
 
 int8_t PatternGenerator::swing_amount() {
   if (options_.swing && output_mode() == OUTPUT_MODE_DRUMS) {
-    int8_t value = U8U8MulShift8(settings_.options.drums.randomness, 42 + 1);
+    int8_t value = U8U8MulShift8(settings_.options.drums.swing_amt, 42 + 1);
     return (!(step_ & 2)) ? value : -value;
   } else {
     return 0;

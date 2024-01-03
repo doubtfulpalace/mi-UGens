@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.8)
-include("${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsTemplate/CMakeTemplate.txt")
+include("${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsCommon/CMakeTemplate.txt")
 project (MiPlaitsChord)
 
 set(BUILD_SOURCES
