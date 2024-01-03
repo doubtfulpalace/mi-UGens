@@ -4,7 +4,9 @@
 #
 SC_SRC=$1
 
-FOLDERS=(MiBraids MiClouds MiElements MiGrids MiMu MiOmi MiPlaits MiPlaitsVirtualAnalog MiPlaitsWaveshaping MiPlaitsWaveshaping MiPlaitsFM MiPlaitsGrain MiPlaitsAdditive MiPlaitsWavetable MiPlaitsChord MiPlaitsSpeech MiPlaitsSwarm MiPlaitsNoise MiPlaitsParticle MiPlaitsString MiPlaitsModal MiPlaitsBassDrum MiPlaitsSnareDrum MiPlaitsHiHat MiRings MiTides MiVerb MiWarps)
+# FOLDERS=(MiBraids MiClouds MiElements MiGrids MiMu MiOmi MiPlaits MiPlaitsVirtualAnalog MiPlaitsWaveshaping MiPlaitsWaveshaping MiPlaitsFM MiPlaitsGrain MiPlaitsAdditive MiPlaitsWavetable MiPlaitsChord MiPlaitsSpeech MiPlaitsSwarm MiPlaitsNoise MiPlaitsParticle MiPlaitsString MiPlaitsModal MiPlaitsBassDrum MiPlaitsSnareDrum MiPlaitsHiHat MiRings MiTides MiVerb MiWarps)
+
+FOLDERS=(MiBraids MiClouds MiElements MiGrids MiMu MiOmi MiPlaits MiRings MiTides MiVerb MiWarps)
 
 MI_UGENS=build/mi-UGens
 
