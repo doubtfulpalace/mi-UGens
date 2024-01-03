@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,7 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
+//
 // See http://creativecommons.org/licenses/MIT/ for more information.
 //
 // -----------------------------------------------------------------------------
@@ -35,49 +35,81 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void Voice::Init(BufferAllocator* allocator) {
+void Voice::Init(BufferAllocator* allocator, int fixed_engine_index) {
+  can_change_engine_ = fixed_engine_index < 0;
+  fixed_engine_index_ = fixed_engine_index;
+  previous_engine_index_ = -1;
   engines_.Init();
-  engines_.RegisterInstance(&virtual_analog_engine_, false, 0.8f, 0.8f);
-  engines_.RegisterInstance(&waveshaping_engine_, false, 0.7f, 0.6f);
-  engines_.RegisterInstance(&fm_engine_, false, 0.6f, 0.6f);
-  engines_.RegisterInstance(&grain_engine_, false, 0.7f, 0.6f);
-  engines_.RegisterInstance(&additive_engine_, false, 0.8f, 0.8f);
-  engines_.RegisterInstance(&wavetable_engine_, false, 0.6f, 0.6f);
-  engines_.RegisterInstance(&chord_engine_, false, 0.8f, 0.8f);
-  engines_.RegisterInstance(&speech_engine_, false, -0.7f, 0.8f);
-
-  engines_.RegisterInstance(&swarm_engine_, false, -3.0f, 1.0f);
-  engines_.RegisterInstance(&noise_engine_, false, -1.0f, -1.0f);
-  engines_.RegisterInstance(&particle_engine_, false, -2.0f, 1.0f);
-  engines_.RegisterInstance(&string_engine_, true, -1.0f, 0.8f);
-  engines_.RegisterInstance(&modal_engine_, true, -1.0f, 0.8f);
-  engines_.RegisterInstance(&bass_drum_engine_, true, 0.8f, 0.8f);
-  engines_.RegisterInstance(&snare_drum_engine_, true, 0.8f, 0.8f);
-  engines_.RegisterInstance(&hi_hat_engine_, true, 0.8f, 0.8f);
+  if (can_change_engine_ || fixed_engine_index == 0) {
+    engines_.RegisterInstance(&virtual_analog_engine_, false, 0.8f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 1) {
+    engines_.RegisterInstance(&waveshaping_engine_, false, 0.7f, 0.6f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 2) {
+    engines_.RegisterInstance(&fm_engine_, false, 0.6f, 0.6f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 3) {
+    engines_.RegisterInstance(&grain_engine_, false, 0.7f, 0.6f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 4) {
+    engines_.RegisterInstance(&additive_engine_, false, 0.8f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 5) {
+    engines_.RegisterInstance(&wavetable_engine_, false, 0.6f, 0.6f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 6) {
+    engines_.RegisterInstance(&chord_engine_, false, 0.8f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 7) {
+    engines_.RegisterInstance(&speech_engine_, false, -0.7f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 8) {
+    engines_.RegisterInstance(&swarm_engine_, false, -3.0f, 1.0f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 9) {
+    engines_.RegisterInstance(&noise_engine_, false, -1.0f, -1.0f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 10) {
+    engines_.RegisterInstance(&particle_engine_, false, -2.0f, 1.0f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 11) {
+    engines_.RegisterInstance(&string_engine_, true, -1.0f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 12) {
+    engines_.RegisterInstance(&modal_engine_, true, -1.0f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 13) {
+    engines_.RegisterInstance(&bass_drum_engine_, true, 0.8f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 14) {
+    engines_.RegisterInstance(&snare_drum_engine_, true, 0.8f, 0.8f);
+  }
+  if (can_change_engine_ || fixed_engine_index == 15) {
+    engines_.RegisterInstance(&hi_hat_engine_, true, 0.8f, 0.8f);
+  }
   for (int i = 0; i < engines_.size(); ++i) {
     // All engines will share the same RAM space.
     allocator->Free();
     engines_.get(i)->Init(allocator);
   }
-  
+
   engine_quantizer_.Init();
-  previous_engine_index_ = -1;
   engine_cv_ = 0.0f;
-  
+
   out_post_processor_.Init();
   aux_post_processor_.Init();
 
   decay_envelope_.Init();
   lpg_envelope_.Init();
-  
+
   trigger_state_ = false;
   previous_note_ = 0.0f;
-  
+
   trigger_delay_.Init(trigger_delay_line_);
 }
 
     // changed out and aux buffers, vb
-    
 void Voice::Render(
     const Patch& patch,
     const Modulations& modulations,
@@ -86,18 +118,18 @@ void Voice::Render(
                    float* aux,
     size_t size) {
   // Trigger, LPG, internal envelope.
-    
+
     //std::cout << "sr: " << kSampleRate << "\n";
-    
-    
+
+
   // Delay trigger by 1ms to deal with sequencers or MIDI interfaces whose
   // CV out lags behind the GATE out.
     // TODO: do we need this?
 //  trigger_delay_.Write(modulations.trigger);
 //  float trigger_value = trigger_delay_.Read(kTriggerDelay);
-    
+
     float trigger_value = modulations.trigger;   // vb
-  
+
   bool previous_trigger_state = trigger_state_;
   if (!previous_trigger_state) {
     if (trigger_value > 0.3f) {
@@ -117,20 +149,24 @@ void Voice::Render(
     engine_cv_ = modulations.engine;
   }
 
-  // Engine selection.
-  int engine_index = engine_quantizer_.Process(
+  int engine_index = previous_engine_index_;
+  if (can_change_engine_) {
+	engine_index = engine_quantizer_.Process(
       patch.engine,
-      engine_cv_,
-      engines_.size(),
-      0.25f);
-  
-  Engine* e = engines_.get(engine_index);
-  
-  if (engine_index != previous_engine_index_) {
-    e->Reset();
-    out_post_processor_.Reset();
-    previous_engine_index_ = engine_index;
+	  engine_cv_,
+	  engines_.size(),
+	  0.25f
+	);
+  } else {
+  	engine_index = 0;
   }
+  Engine* e = engines_.get(engine_index);
+  if (engine_index != previous_engine_index_) {
+	e->Reset();
+	out_post_processor_.Reset();
+	previous_engine_index_ = engine_index;
+  }
+
   EngineParameters p;
 
   bool rising_edge = trigger_state_ && !previous_trigger_state;
@@ -143,7 +179,7 @@ void Voice::Render(
   } else {
     p.trigger = TRIGGER_UNPATCHED;
   }
-  
+
   const float short_decay = (200.0f * kBlockSize) / kSampleRate *
       SemitonesToRatio(-96.0f * patch.decay);
 
@@ -157,18 +193,18 @@ void Voice::Render(
   bool use_internal_envelope = modulations.trigger_patched;
 
   // Actual synthesis parameters.
-  
+
   p.harmonics = patch.harmonics + modulations.harmonics;
   CONSTRAIN(p.harmonics, 0.0f, 1.0f);
 
   float internal_envelope_amplitude = 1.0f;
-  if (engine_index == 7) {
+  if (engine_index == 7 || fixed_engine_index_ == 7) {
     internal_envelope_amplitude = 2.0f - p.harmonics * 6.0f;
     CONSTRAIN(internal_envelope_amplitude, 0.0f, 1.0f);
     speech_engine_.set_prosody_amount(
         !modulations.trigger_patched || modulations.frequency_patched ?
             0.0f : patch.frequency_modulation_amount);
-    speech_engine_.set_speed( 
+    speech_engine_.set_speed(
         !modulations.trigger_patched || modulations.morph_patched ?
             0.0f : patch.morph_modulation_amount);
   }
@@ -209,16 +245,16 @@ void Voice::Render(
 
   bool already_enveloped = pp_s.already_enveloped;
   e->Render(p, out, aux, size, &already_enveloped);
-  
+
   bool lpg_bypass = already_enveloped || \
       (!modulations.level_patched && !modulations.trigger_patched);
-  
+
   // Compute LPG parameters.
   if (!lpg_bypass) {
     const float hf = patch.lpg_colour;
     const float decay_tail = (20.0f * kBlockSize) / kSampleRate *
         SemitonesToRatio(-72.0f * patch.decay + 12.0f * hf) - short_decay;
-    
+
     if (modulations.level_patched) {
       lpg_envelope_.ProcessLP(compressed_level, short_decay, decay_tail, hf);
     } else {
@@ -226,7 +262,7 @@ void Voice::Render(
       lpg_envelope_.ProcessPing(attack, short_decay, decay_tail, hf);
     }
   }
-  
+
     // vb changed this to skip conversion to '16bit int'
     // and stay with floats instead.
   out_post_processor_.Process(
@@ -246,7 +282,7 @@ void Voice::Render(
       lpg_envelope_.hf_bleed(),
       aux,
       size);
-    
+
      }
-  
+
 }  // namespace plaits

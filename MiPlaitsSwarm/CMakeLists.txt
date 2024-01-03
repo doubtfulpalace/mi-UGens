@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 3.8)
 include("${CMAKE_CURRENT_SOURCE_DIR}/../MiPlaitsTemplate/CMakeTemplate.txt")
-project (MiPlaits)
+project (MiPlaitsSwarm)
 
 set(BUILD_SOURCES
-	MiPlaits.cpp
+	MiPlaitsSwarm.cpp
 )
 
 add_library(${PROJECT_NAME} MODULE
